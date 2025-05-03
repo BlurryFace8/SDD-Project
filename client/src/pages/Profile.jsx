@@ -18,6 +18,10 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import GuideProfileForm from "./GuideProfileForm";
+import axios from "axios";
+
+
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -30,12 +34,7 @@ export default function Profile() {
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
-  // firebase storage
-  // allow read;
-  // allow write: if
-  // request.resource.size < 2 * 1024 * 1024 &&
-  // request.resource.contentType.matches('image/.*')
-
+  
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -288,6 +287,16 @@ export default function Profile() {
           ))}
         </div>
       )}
+
+      {currentUser.role === "guide" && (
+        <GuideProfileForm
+          guideInfo={formData}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
+        />
+      )}
+
     </div>
   );
 }
