@@ -3,7 +3,7 @@ import TourListing from '../models/listing.model.js';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getAllTourListings } from '../controllers/tourlisting.controller.js';
+import { getAllTourListings, getTourListingById, getTourListingsByGuideId } from '../controllers/tourlisting.controller.js';
 
 const router = express.Router();
 
@@ -35,7 +35,7 @@ router.post('/create', upload.array('images'), async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const imagePaths = req.files ? req.files.map(file => file.path) : [];
+    const imagePaths = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
 
     // Ensure datesAvailable exists and is handled as an array
     let datesAvailable = req.body.datesAvailable;
@@ -67,7 +67,9 @@ router.post('/create', upload.array('images'), async (req, res) => {
   }
 });
 
-router.get('/', getAllTourListings); 
+router.get('/', getAllTourListings);
+router.get('/:id', getTourListingById);
+router.get('/guide/:guideId', getTourListingsByGuideId);
 
 
 export default router;
