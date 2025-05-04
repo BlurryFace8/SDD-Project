@@ -1,9 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [guides, setGuides] = useState([]);
   const [tourListings, setTourListings] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,29 +66,29 @@ export default function Home() {
           <h2 className="text-3xl font-semibold text-center mb-8">Tour Listings</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {tourListings.map((item, index) => (
-                <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
-                  <img
-                    src={item.images?.[0] || "https://i.pinimg.com/736x/a7/3c/bf/a73cbfbcf18054bf31ee42e6453c5d94.jpg"}
-                    alt={item.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-xl font-semibold">{item.title}</h3>
-                    <p className="text-gray-600 text-sm">
-                      {item.location}
-                    </p>
-                    <p className="mt-2 text-gray-600 line-clamp-2">
-                      {item.description}
-                    </p>
-                    <p className="text-gray-600">
-                      {item.price}
-                    </p>
-                    <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md">
-                      View Listing
-                    </button>
-                  </div>
+              <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
+                <img
+                  src={item.images?.[0] ? `http://localhost:3000/${item.images[0]}` : "https://i.pinimg.com/736x/a7/3c/bf/a73cbfbcf18054bf31ee42e6453c5d94.jpg"}
+                  alt={item.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                  <p className="text-gray-600 text-sm">
+                    {item.location}
+                  </p>
+                  <p className="mt-2 text-gray-600 line-clamp-2">
+                    {item.description}
+                  </p>
+                  <p className="text-green-900 font-semibold">
+                    Rs. {item.price}
+                  </p>
+                  <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md" onClick={() => navigate(`/listing/${item._id}`)}>
+                    View Listing
+                  </button>
                 </div>
-              ))
+              </div>
+            ))
             }
           </div>
         </section>

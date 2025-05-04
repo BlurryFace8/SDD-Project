@@ -20,7 +20,7 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import GuideProfileForm from "./GuideProfileForm";
 import axios from "axios";
-
+import { GuideTourListings } from "../components/GuideTourListings";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -205,6 +205,14 @@ export default function Profile() {
           className="border p-3 rounded-lg"
           onChange={handleChange}
         />
+         <input
+          type='text'
+          placeholder='98xxxxxxxx'
+          className='border p-3 rounded-lg'
+          id='phoneNum'
+          defaultValue={currentUser.phoneNum}
+          onChange={handleChange}
+        />
         <input
           type="password"
           placeholder="password"
@@ -241,12 +249,9 @@ export default function Profile() {
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User is updated successfully!" : ""}
       </p>
-      <button onClick={handleShowListings} className="text-green-700 w-full">
-        Show Listings
-      </button>
-      <p className="text-red-700 mt-5">
-        {showListingsError ? "Error showing listings" : ""}
-      </p>
+      <div className="w-full text-center font-bold text-xl mb-4">
+        Listings
+      </div>
 
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4">
@@ -287,6 +292,10 @@ export default function Profile() {
           ))}
         </div>
       )}
+
+      <GuideTourListings
+        guideId={currentUser._id}
+      />
 
       {currentUser.role === "guide" && (
         <GuideProfileForm

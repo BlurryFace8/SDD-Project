@@ -65,7 +65,7 @@ const GuideProfileForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='guide-profile-form'>
+    <form onSubmit={handleSubmit} className='guide-profile-form mt-8'>
       <h2 className='text-2xl font-semibold mb-4'>Create Guide Profile</h2>
 
       <label className='block mb-1'>Experience</label>
@@ -92,6 +92,7 @@ const GuideProfileForm = () => {
         onChange={handlePhotoChange}
         className='mb-4'
       />
+      
 
       <button
         type='submit'

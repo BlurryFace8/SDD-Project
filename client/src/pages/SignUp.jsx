@@ -6,6 +6,7 @@ export default function SignUp() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
+    phoneNum: '',
     password: '',
     role: 'normal',
   });
@@ -64,6 +65,13 @@ export default function SignUp() {
           placeholder='email'
           className='border p-3 rounded-lg'
           id='email'
+          onChange={handleChange}
+        />
+        <input
+          type='text'
+          placeholder='98xxxxxxxx'
+          className='border p-3 rounded-lg'
+          id='phoneNum'
           onChange={handleChange}
         />
         <input
