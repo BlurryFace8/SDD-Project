@@ -39,6 +39,35 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
+export const patchUser = async (req, res, next) => {
+  if (req.user.id !== req.params.id)
+    return next(errorHandler(401, 'You can only update your own account!'));
+
+  try {
+    const updateData = { ...req.body };
+
+    // Hash password if it's being updated
+    if (updateData.password) {
+      updateData.password = bcryptjs.hashSync(updateData.password, 10);
+    }
+
+    if (req.file) {
+      updateData.avatar = `uploads/${req.file.filename}`;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    const { password, ...rest } = updatedUser._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, 'You can only delete your own account!'));

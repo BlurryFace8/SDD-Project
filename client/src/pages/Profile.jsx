@@ -34,36 +34,56 @@ export default function Profile() {
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
-  
+  console.log({ currentUser });
+
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
     }
   }, [file]);
 
-  const handleFileUpload = (file) => {
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + file.name;
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setFilePerc(Math.round(progress));
-      },
-      (error) => {
-        setFileUploadError(true);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setFormData({ ...formData, avatar: downloadURL })
-        );
+  const handleFileUpload = async (file) => {
+    const formdata = new FormData();
+    formdata.append("avatar", file);
+    const res = await axios.patch(
+      `http://localhost:3000/api/user/patch/${currentUser._id}`,
+      formdata,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
       }
     );
+    const avatar = res.data?.avatar || "";
+    dispatch(
+      updateUserSuccess({
+        ...currentUser,
+        avatar,
+      })
+    );
   };
+
+  // const handleFileUpload = (file) => {
+  //   const storage = getStorage(app);
+  //   const fileName = new Date().getTime() + file.name;
+  //   const storageRef = ref(storage, fileName);
+  //   const uploadTask = uploadBytesResumable(storageRef, file);
+
+  //   uploadTask.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       const progress =
+  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       setFilePerc(Math.round(progress));
+  //     },
+  //     (error) => {
+  //       setFileUploadError(true);
+  //     },
+  //     () => {
+  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+  //         setFormData({ ...formData, avatar: downloadURL })
+  //       );
+  //     }
+  //   );
+  // };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -172,7 +192,7 @@ export default function Profile() {
         />
         <img
           onClick={() => fileRef.current.click()}
-          src={formData.avatar || currentUser.avatar}
+          src={`http://localhost:3000/${currentUser.avatar}`}
           alt="profile"
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
         />
@@ -205,11 +225,11 @@ export default function Profile() {
           className="border p-3 rounded-lg"
           onChange={handleChange}
         />
-         <input
-          type='text'
-          placeholder='98xxxxxxxx'
-          className='border p-3 rounded-lg'
-          id='phoneNum'
+        <input
+          type="text"
+          placeholder="98xxxxxxxx"
+          className="border p-3 rounded-lg"
+          id="phoneNum"
           defaultValue={currentUser.phoneNum}
           onChange={handleChange}
         />
@@ -249,9 +269,7 @@ export default function Profile() {
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User is updated successfully!" : ""}
       </p>
-      <div className="w-full text-center font-bold text-xl mb-4">
-        Listings
-      </div>
+      <div className="w-full text-center font-bold text-xl mb-4">Listings</div>
 
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4">
@@ -293,9 +311,7 @@ export default function Profile() {
         </div>
       )}
 
-      <GuideTourListings
-        guideId={currentUser._id}
-      />
+      <GuideTourListings guideId={currentUser._id} />
 
       {currentUser.role === "guide" && (
         <GuideProfileForm
@@ -305,7 +321,6 @@ export default function Profile() {
           }
         />
       )}
-
     </div>
   );
 }

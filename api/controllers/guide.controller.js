@@ -4,8 +4,8 @@ import User from '../models/user.model.js';
 export const createGuideProfile = async (req, res) => {
   try {
     const { userId, experience, description } = req.body;
-    const photoPaths = req.files.map(file => file.path);
-
+    const photoPaths = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
+      
     const guideProfile = new GuideProfile({
       user: userId,
       experience,
@@ -47,7 +47,7 @@ export const getGuideById = async (req, res) => {
     const { id } = req.params;
 
     const guide = await GuideProfile.findOne({ user: id })
-      .populate('user', '_id username email avatar') // populate user details
+      .populate('user', '_id username email avatar phoneNum') // populate user details
       .exec();
 
     if (!guide) {
@@ -109,7 +109,7 @@ export const upsertGuideProfile = async (req, res) => {
 
     // If files were uploaded, include photo paths
     if (req.files && req.files.length > 0) {
-      updateFields.travelPhotos = req.files.map(file => file.path);
+      updateFields.travelPhotos = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
     }
 
     // Upsert the guide profile: create if not exists, update if exists
