@@ -10,7 +10,7 @@ import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 import guideRoutes from './routes/guide.route.js';
 import tourlistingRoutes from './routes/tourlisting.route.js';
-
+import bookingRoutes from './routes/bookings.route.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,6 +45,7 @@ app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/guide', guideRoutes);
 app.use('/api/tours', tourlistingRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
